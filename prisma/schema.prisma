@@ -1,0 +1,166 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified Boolean   @default(false)
+  image         String?
+  passwordHash  String?
+  role          Role      @default(USER)
+  username      String?   @unique
+  school        String?
+  grade         String?
+  subjects      String[]
+  bio           String?
+
+  accounts Account[]
+  sessions Session[]
+
+  resources     Resource[]
+  bookmarks     Bookmark[]
+  reports       Report[]
+  recentViews   RecentView[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  userId       String
+  sessionToken String   @unique
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model NCERTBook {
+  id          String   @id @default(cuid())
+  title       String
+  class       String
+  subject     String
+  language    String   @default("English")
+  description String?
+  coverUrl    String?
+  pdfUrl      String?
+  source      String   @default("upload")
+  officialUrl String?
+  chapters    String[]
+  order       Int      @default(0)
+
+  bookmarks    Bookmark[]
+  recentViews  RecentView[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Resource {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  type        String
+  fileUrl     String
+  fileType    String
+  fileSize    Int
+  subject     String?
+  class       String?
+  board       String?
+  language    String?
+  tags        String[]
+  previewUrl  String?
+  downloads   Int      @default(0)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  bookmarks   Bookmark[]
+  reports     Report[]
+  recentViews RecentView[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Bookmark {
+  id         String   @id @default(cuid())
+  userId     String
+  resourceId String?
+  bookId     String?
+
+  user     User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  resource Resource?  @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+  book     NCERTBook? @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, resourceId])
+  @@unique([userId, bookId])
+}
+
+model Report {
+  id         String   @id @default(cuid())
+  reason     String
+  userId     String
+  resourceId String
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  resource Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
+model RecentView {
+  id         String   @id @default(cuid())
+  userId     String
+  resourceId String?
+  bookId     String?
+
+  user     User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  resource Resource?  @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+  book     NCERTBook? @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
