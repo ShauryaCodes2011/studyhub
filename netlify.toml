@@ -1,16 +1,13 @@
 [build]
   command = "npm run build"
-  publish = ".next"
 
 [build.environment]
   NODE_VERSION = "20"
 
-[[plugins]]
-  package = "@netlify/plugin-nextjs"
-
-# Environment variables (set these in Netlify dashboard)
+# Environment variables (set these in Netlify dashboard → Site settings → Environment variables)
 # DATABASE_URL="postgresql://..."
 # NEXT_PUBLIC_SUPABASE_URL="..."
 # NEXT_PUBLIC_SUPABASE_ANON_KEY="..."
-# BETTER_AUTH_SECRET="..."
-# BETTER_AUTH_URL="https://YOUR_SITE.netlify.app"
+# SUPABASE_SERVICE_ROLE_KEY="..."
+# BETTER_AUTH_SECRET="your-random-secret-32-chars-min"
+# BETTER_AUTH_URL="https://YOUR_SITE_NAME.netlify.app"
