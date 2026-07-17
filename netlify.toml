@@ -3,11 +3,19 @@
 
 [build.environment]
   NODE_VERSION = "20"
+  NEXT_TELEMETRY_DISABLED = "1"
 
-# Environment variables (set these in Netlify dashboard → Site settings → Environment variables)
-# DATABASE_URL="postgresql://..."
-# NEXT_PUBLIC_SUPABASE_URL="..."
-# NEXT_PUBLIC_SUPABASE_ANON_KEY="..."
-# SUPABASE_SERVICE_ROLE_KEY="..."
-# BETTER_AUTH_SECRET="your-random-secret-32-chars-min"
-# BETTER_AUTH_URL="https://YOUR_SITE_NAME.netlify.app"
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# ⚠️ Environment variables — set these in Netlify Dashboard
+#    Site Configuration → Environment Variables → "Bulk import from .env"
+#    (or use the netlify-env-vars.txt file in this project)
+#
+# NEXT_PUBLIC_SUPABASE_URL
+# NEXT_PUBLIC_SUPABASE_ANON_KEY
+# SUPABASE_SERVICE_ROLE_KEY
+# DATABASE_URL
+# BETTER_AUTH_SECRET
+# BETTER_AUTH_URL
+# NEXT_PUBLIC_BETTER_AUTH_URL
